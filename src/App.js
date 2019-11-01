@@ -75,7 +75,7 @@ class Filter extends Component {
     return(
       <div>
         <img />
-        <input type="text" placeholder="Filter"/>
+        <input type="text" placeholder="Filter" onChange={event => this.props.onTextChange(event.target.value)}/>
       </div>
     );
   }
@@ -101,7 +101,10 @@ class Playlist extends Component {
 class App extends Component {
   constructor() {
     super();
-    this.state = {serverData: {}}
+    this.state = {
+      serverData: {},
+      filterString: ''
+    }
   }
 
   componentDidMount() {
@@ -125,9 +128,12 @@ class App extends Component {
           <HoursCounter playlists={this.state.serverData.user && 
                                 this.state.serverData.user.playlists}/>
 
-          <Filter />
+          <Filter onTextChange={text => this.setState({filterString: text})} />
 
-          {this.state.serverData.user.playlists.map(playlist => 
+          {this.state.serverData.user.playlists.filter(playlist =>
+            playlist.name.toLowerCase().includes(
+              this.state.filterString.toLowerCase())
+          ).map(playlist => 
             <Playlist playlist={playlist} />
           )}
 
